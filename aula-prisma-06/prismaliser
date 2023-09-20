@@ -1,0 +1,43 @@
+model User {
+  id       Int      @id @default(autoincrement())
+  email    String   @unique
+  password String
+  profile  Profile?
+}
+
+model Profile {
+  id    Int @id @default(autoincrement())
+  owner Int @unique
+
+  address Address[]
+  user    User             @relation(fields: [owner], references: [id])
+  pserv   ProfileService[]
+}
+
+model Address {
+  id      Int    @id @default(autoincrement())
+  street  String
+  number  Int
+  zipcode String
+
+  profile Profile @relation(fields: [id], references: [id])
+}
+
+model Service {
+  id          Int    @id @default(autoincrement())  
+  description String
+
+  pserv ProfileService[]
+}
+
+model ProfileService {
+  servicecode String
+  profile_id  Int
+  service_id  Int
+
+  profile Profile @relation(fields: [profile_id], references: [id])
+  service Service @relation(fields: [service_id], references: [id])
+
+    @@id([profile_id, service_id])
+}
+
